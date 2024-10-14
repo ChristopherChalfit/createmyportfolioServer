@@ -73,4 +73,15 @@ export class UserController {
       { updateUser: [updateUser] },
     );
   }
+  @UseGuards(JwtAuthGuard)
+  @Post('/:userId/formations')
+  postFormations(
+    @Param('userId') userId: string,
+    @Body() updateUser: { diplome: string; description: string; school: string; startDate: string; endDate: string; },
+  ) {
+     return this.appService.updateUserFormations(
+      { userId },
+      { updateUser: [updateUser] },
+    );
+  }
 }

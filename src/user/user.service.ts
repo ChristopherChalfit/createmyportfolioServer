@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { updateUserExperiences, updateUserInfoPerso, updateUserLanguages, updateUserSkills } from 'src/auth/auth.types';
+import { updateUserExperiences, updateUserFormations, updateUserInfoPerso, updateUserLanguages, updateUserSkills } from 'src/auth/auth.types';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -171,6 +171,27 @@ export class UserService {
     });
 
     return updatedExperiences;
+  }
+  async updateUserFormations({ userId }: { userId: string }, { updateUser }: { updateUser: updateUserFormations }) {
+    
+    const formationsToUpdate = updateUser.flat().map(formation => ({
+        diplome: formation.diplome,
+        description: formation.description,
+        school: formation.school,
+        startDate: new Date(formation.startDate), 
+        endDate: new Date(formation.endDate),     
+        userId: userId,
+    }));
+
+    await this.prismaService.education.deleteMany({
+        where: { userId: userId },
+    });
+
+    const updatedFormation = await this.prismaService.education.createMany({
+        data: formationsToUpdate,
+    });
+
+    return updatedFormation;
   }
   stringToBoolean(value: any): boolean {
     if (typeof value === 'string') {
