@@ -13,6 +13,7 @@ export class UserService {
             lastName: true,
             birthDate: true,
             email: true,
+        description: true,
             phone: true,
             address: true,
             website: true,
@@ -43,6 +44,7 @@ export class UserService {
         linkId: true,
         email: true,
         photoProfile: true,
+        description: true,
         phone: true,
         address: true,
         website: true,
@@ -72,6 +74,7 @@ export class UserService {
         birthDate: true,
         email: true,
         photoProfile: true,
+        description: true,
         phone: true,
         address: true,
         website: true,
@@ -100,6 +103,7 @@ export class UserService {
         website: updateUser.website,
         github: updateUser.github,
         linkedin: updateUser.linkedin,
+        description: updateUser.description,
     };
     if (updateUser.birthDate) {
         dataToUpdate.birthDate = new Date(updateUser.birthDate);

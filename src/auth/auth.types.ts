@@ -18,6 +18,7 @@ export type updateUserInfoPerso = {
   github: string;
   linkedin: string;
   vehicle: string;
+  description: string;
 };
 export type updateUserSkills = {
   name: string;

@@ -35,6 +35,7 @@ export class UserController {
       github: string;
       linkedin: string;
       vehicle: string;
+      description: string;
     },
   ) {
     return this.appService.updateUserInfoPerso({ userId }, { updateUser });

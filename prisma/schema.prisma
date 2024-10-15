@@ -21,6 +21,7 @@ model User {
   birthDate       DateTime?
   email           String          @unique
   photoProfile    String?
+  description     String?
   phone           String?  // Optionnel
   address         String?  // Optionnel
   website         String?
