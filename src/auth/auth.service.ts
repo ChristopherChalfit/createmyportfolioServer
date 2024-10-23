@@ -87,7 +87,7 @@ export class AuthService {
     };
   }
   private generateLinkId(firstName: string, lastName: string): string {
-    const randomNum = Math.floor(Math.random() * 5000); // Génère un nombre aléatoire
+    const randomNum = Math.floor(Math.random() * 5000);
     return `${firstName}${lastName}-${randomNum}`;
   }
 }

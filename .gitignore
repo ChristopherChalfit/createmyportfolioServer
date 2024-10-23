@@ -57,3 +57,5 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 prisma/migrations/20241006145606_/migration.sql
 prisma/dev.db
 *.db
+/uploads/images/*
+!/uploads/images/index.html
