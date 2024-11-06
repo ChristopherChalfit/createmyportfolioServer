@@ -17,7 +17,6 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
-
 @ApiTags('users') 
 @Controller('user')
 export class UserController {
