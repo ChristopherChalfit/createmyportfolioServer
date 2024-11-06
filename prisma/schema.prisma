@@ -9,8 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+   provider          = "postgresql"
+   url               = env("DATABASE_URL")
+   directUrl         = env("DIRECT_URL")
 }
 model User {
   id              String             @id @default(cuid())
@@ -34,7 +35,14 @@ model User {
   skills          Skill[]
   experiences     Experience[]
   educations      Education[]
-  role            String           @default("USER")
+  scriptPortfolio Portfolio?
+  role            String           @default("user")
+}
+model Portfolio {
+  id       String @id @default(cuid())
+  script   String?
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id])
 }
 
 model DrivingLicense {
@@ -73,7 +81,7 @@ model Experience {
   title           String
   company         String
   location        String
-  startDate       DateTime
+  startDate       DateTime?
   endDate         DateTime?
   description     String
   userId          String
