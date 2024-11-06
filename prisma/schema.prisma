@@ -1,100 +1,99 @@
-// This is your Prisma schema file,
+// This is your Prisma schema file
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-   provider          = "postgresql"
-   url               = env("DATABASE_URL")
-   directUrl         = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
+
 model User {
   id              String             @id @default(cuid())
-  linkId          String           @unique
+  linkId          String             @unique
   password        String
-  firstName       String?  // Optionnel
-  lastName        String?  // Optionnel
+  firstName       String?            // Optional
+  lastName        String?            // Optional
   birthDate       DateTime?
-  email           String          @unique
+  email           String             @unique
   photoProfile    String?
   description     String?
-  phone           String?  // Optionnel
-  address         String?  // Optionnel
+  phone           String?            // Optional
+  address         String?            // Optional
   website         String?
   github          String?
   linkedin        String?
-  vehicle         Boolean? // Optionnel
-  drivingLicenses DrivingLicense[] // Relation vers DrivingLicense
+  vehicle         Boolean?           // Optional
+  drivingLicenses DrivingLicense[]   // Relation to DrivingLicense
   socialLinks     SocialLink[]
   languages       Language[]
   skills          Skill[]
   experiences     Experience[]
   educations      Education[]
   scriptPortfolio Portfolio?
-  role            String           @default("user")
+  role            String             @default("user")
 }
+
 model Portfolio {
-  id       String @id @default(cuid())
+  id       String   @id @default(cuid())
   script   String?
-  userId   String @unique
-  user     User   @relation(fields: [userId], references: [id])
+  userId   String   @unique
+  user     User     @relation(fields: [userId], references: [id])
 }
 
 model DrivingLicense {
-  id              String             @id @default(cuid())
-  type      String // E.g. "Permis A", "Permis B"
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
+  id       String   @id @default(cuid())
+  type     String   // E.g. "Permis A", "Permis B"
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
 }
 
 model SocialLink {
-  id              String             @id @default(cuid())
-  platform  String
-  url       String
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
+  id       String   @id @default(cuid())
+  platform String
+  url      String
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
 }
 
 model Language {
- id              String             @id @default(cuid())
-  name   String
-  level  String?  // Optionnel : Niveau de maîtrise
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id       String   @id @default(cuid())
+  name     String
+  level    String?  // Optional: Proficiency level
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
 }
 
 model Skill {
- id              String             @id @default(cuid())
-  name      String
-  category  String? // E.g. "Frontend", "Backend", "Design", etc.
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
+  id       String   @id @default(cuid())
+  name     String
+  category String?  // E.g., "Frontend", "Backend", "Design", etc.
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
 }
 
 model Experience {
-  id              String             @id @default(cuid())
-  title           String
-  company         String
-  location        String
-  startDate       DateTime?
-  endDate         DateTime?
-  description     String
-  userId          String
-  user            User     @relation(fields: [userId], references: [id])
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String
+  startDate   DateTime?
+  endDate     DateTime?
+  description String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 model Education {
-  id              String             @id @default(cuid())
-  diplome   String?  // E.g. "Baccalauréat"
-  description     String? 
-  school    String?
-  startDate DateTime
-  endDate   DateTime
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
+  id          String   @id @default(cuid())
+  diplome     String?  // E.g., "Baccalauréat"
+  description String?
+  school      String?
+  startDate   DateTime
+  endDate     DateTime
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
 }
