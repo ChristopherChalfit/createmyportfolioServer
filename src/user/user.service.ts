@@ -9,6 +9,11 @@ import {
 import { PrismaService } from 'src/prisma.service';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createClient } from '@supabase/supabase-js'
+import { v4 as uuidv4 } from 'uuid';
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = createClient(supabaseUrl, supabaseKey)
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -34,6 +39,7 @@ export class UserService {
         skills: true,
         experiences: true,
         educations: true,
+        scriptPortfolio: true,
       },
     });
     return users;
@@ -65,6 +71,7 @@ export class UserService {
         skills: true,
         experiences: true,
         educations: true,
+        scriptPortfolio: true,
       },
     });
     return user ? user : 'User not find';
@@ -95,6 +102,7 @@ export class UserService {
         skills: true,
         experiences: true,
         educations: true,
+        scriptPortfolio: true,
       },
     });
     return user ? user : 'User not find';
@@ -108,35 +116,30 @@ export class UserService {
       select: { photoProfile: true },
     });
 
-    if (user && user.photoProfile) {
-      const oldImageName = user.photoProfile.split('/').pop();
-      const oldImagePath = path.join(
-        __dirname,
-        '../../uploads/images',
-        oldImageName,
-      );
-
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath);
+    if (user) {
+      const nameImage = "/" + uuidv4();
+      const { data, error } = await supabase.storage
+        .from("portfolio")
+        .upload(nameImage, image.buffer, { contentType: image.mimetype });
+      if (user.photoProfile) {
+        const oldImageName = user.photoProfile.split('/').pop();
+        const { error: deleteError } = await supabase.storage.from("portfolio").remove([oldImageName]);
+        if (deleteError) {
+            console.error('Erreur lors de la suppression de l\'ancienne image:', deleteError);
+            throw new Error('Erreur lors de la suppression de l\'ancienne image');
+        }
       }
+
+      const publicUrl = supabase.storage
+        .from("portfolio")
+        .getPublicUrl(nameImage);
+      const updatedUser = await this.prismaService.user.update({
+        where: { id: userId },
+        data: { photoProfile: publicUrl.data.publicUrl },
+      });
+      
+      return updatedUser;
     }
-
-    const imageDir = path.join(__dirname, '../../uploads/images');
-    const imageName = `${Date.now()}-${image.originalname}`;
-    if (!imageDir || !imageName) {
-      console.error('imageDir ou imageName est undefined');
-      throw new Error("Chemin d'image ou nom d'image non défini");
-    }
-    const imagePath = path.join(imageDir, imageName);
-    fs.writeFileSync(imagePath, image.buffer);
-
-    const imageUrl = `http://127.0.0.1:3000/images/${imageName}`;
-
-    const updatedUser = await this.prismaService.user.update({
-      where: { id: userId },
-      data: { photoProfile: imageUrl },
-    });
-    return updatedUser;
   }
   async updateUserInfoPerso(
     { userId }: { userId: string },
